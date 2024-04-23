@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FlyingCar : MonoBehaviour
@@ -7,7 +5,8 @@ public class FlyingCar : MonoBehaviour
     // Public fields to adjust in the Inspector
     public float speed = 10f; // Forward/backward speed
     public float turnSpeed = 50f; // Rotation speed
-    public float ascendSpeed = 5f; // Ascend/descend speed
+    public float ascendSpeed = 5f; // Speed for ascending
+    public float descendSpeed = 5f; // Speed for descending
     public float hoverHeight = 2f; // Desired height above the ground
 
     // Private fields to manage internal states
@@ -26,8 +25,10 @@ public class FlyingCar : MonoBehaviour
     void Update()
     {
         // Handle movement input
-        float vertical = Input.GetAxis("Vertical"); // W/S or up/down arrow
-        float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrow
+        float vertical = Input.GetAxis("Vertical"); // W/S or up/down arrow for forward/backward
+        float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrow for turning
+        bool ascend = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift); // LeftShift to ascend
+        bool descend = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl); // Ctrl keys to descend
 
         // Control forward/backward movement
         Vector3 forward = transform.forward * vertical * speed;
@@ -37,7 +38,17 @@ public class FlyingCar : MonoBehaviour
         float turn = horizontal * turnSpeed * Time.deltaTime;
         transform.Rotate(0, turn, 0);
 
-        // Control hovering
+        // Control ascending/descending
+        if (ascend)
+        {
+            rb.AddForce(Vector3.up * ascendSpeed, ForceMode.Force);
+        }
+        else if (descend)
+        {
+            rb.AddForce(Vector3.down * descendSpeed, ForceMode.Force);
+        }
+
+        // Control hovering to maintain a minimum height
         Hover();
     }
 

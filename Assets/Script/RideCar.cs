@@ -5,32 +5,35 @@ using UnityEngine.UI;
 
 public class RideCar : MonoBehaviour
 {
-    public GameObject player; // The player object
+    public GameObject player; // The player object (Armature)
     public GameObject Car; // The car object
     public float interactDistance = 2.0f; // Distance within which interaction is possible
     public KeyCode rideKey = KeyCode.F; // Key to ride the car
-    public bool isRiding = false; // Whether the player is riding the Car
+    public bool isRiding = false; // Whether the player is riding the car
+    public Transform carSeat; // Transform to position player when riding
 
     void Update()
     {
-        // Calculate the distance between the player and the Car
         float distance = Vector3.Distance(player.transform.position, Car.transform.position);
 
-        // Check if the player is within interaction range and presses the ride key
         if (distance <= interactDistance && Input.GetKeyDown(rideKey) && !isRiding)
         {
-            Ride(); // Ride the Car
+            Ride();
         }
         else if (isRiding && Input.GetKeyDown(rideKey))
         {
-            Dismount(); // Dismount the Car
+            Dismount();
         }
     }
 
     void Ride()
     {
         isRiding = true;
-        player.SetActive(false); // Disable player while riding
+
+        // Disable player movement components (replace with specific component names)
+        player.GetComponent<CharacterController>().enabled = false;
+        player.GetComponent<Rigidbody>().isKinematic = true;
+
         // Set the Car as active and set its control (implement Car control separately)
         // Example: Car.GetComponent<CarControl>().enabled = true;
         Debug.Log("Riding the Car");
@@ -39,7 +42,11 @@ public class RideCar : MonoBehaviour
     void Dismount()
     {
         isRiding = false;
-        player.SetActive(true); // Enable player when dismounting
+
+        // Enable player movement components
+        player.GetComponent<CharacterController>().enabled = true;
+        player.GetComponent<Rigidbody>().isKinematic = false;
+
         // Disable Car control when dismounting
         // Example: Car.GetComponent<CarControl>().enabled = false;
         Debug.Log("Dismounting the Car");
