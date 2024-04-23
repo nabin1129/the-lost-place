@@ -21,7 +21,7 @@ public class EButtonPopup : MonoBehaviour
         if (isInRange && Input.GetKeyDown(KeyCode.E))
         {
             // Show the popup with desired message
-            popupText.text = "You pressed E!"; // Change this to your actual message
+            popupText.text = "Hi here is the hint."; // Change this to your actual message
             popupText.gameObject.SetActive(true);
 
             // Optional: Perform additional actions on E press (e.g., open inventory)
