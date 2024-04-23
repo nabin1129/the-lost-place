@@ -1,51 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // for UI elements
-
-public class EButtonPopup : MonoBehaviour
+using UnityEngine.InputSystem;
+public class MouseClicker : MonoBehaviour
 {
-    public Text popupText; // Reference to the text element in the popup UI
-
-    private bool isInRange = false; // Flag to check if player is in interaction range
-
-    void Start()
-    {
-        // Hide the popup initially
-        popupText.gameObject.SetActive(false);
-    }
-
-    void Update()
-    {
-        // Check for "E" key press only when in interaction range
-        if (isInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            // Show the popup with desired message
-            popupText.text = "Hi here is the hint."; // Change this to your actual message
-            popupText.gameObject.SetActive(true);
-
-            // Optional: Perform additional actions on E press (e.g., open inventory)
-            // ... your code here ...
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        // Check if player enters interaction trigger area (e.g., collider around object)
-        if (other.CompareTag("Player"))
-        {
-            isInRange = true;
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        // Check if player exits interaction trigger area
-        if (other.CompareTag("Player"))
-        {
-            isInRange = false;
-            // Hide the popup if player leaves the area
-            popupText.gameObject.SetActive(false);
-        }
-    }
+// This code is based on the Unity example found here:
+// https://learn.unity.com/tutorial/onmousedown#63566bf3edbc2a0285856b5a
+[SerializeField]
+private Camera m_Camera;
+void Awake()
+{
+m_Camera = Camera.main;
+}
+// Start is called before the first frame update
+void Start()
+{
+}
+// Update is called once per frame
+void FixedUpdate()
+{
+Mouse mouse = Mouse.current;
+if (mouse.leftButton.wasPressedThisFrame)
+{
+Vector3 mousePosition = mouse.position.ReadValue();
+Ray ray = m_Camera.ScreenPointToRay(mousePosition);
+if (Physics.Raycast(ray, out RaycastHit hit))
+{
+Debug.Log("Clicked on: " + hit.collider.gameObject.name);
+GOInteraction aGOI = hit.collider.gameObject.GetComponent<GOInteraction>();
+if(aGOI)
+{
+aGOI.Interaction = true;
+}
+}
+}
+}
 }
