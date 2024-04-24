@@ -1,3 +1,4 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class RideCar : MonoBehaviour
     public KeyCode rideKey = KeyCode.F; // Key to ride the car
     public bool isRiding = false; // Whether the player is riding the car
     public Transform carSeat; // Transform to position player when riding
+    public FlyingCar carControls;
+    public ThirdPersonController PersonController;
+
 
     void Update()
     {
@@ -30,6 +34,9 @@ public class RideCar : MonoBehaviour
     void Ride()
     {
         isRiding = true;
+
+        if (carControls != null) carControls.enabled = true;
+        if (PersonController != null) PersonController.enabled = false;
 
         // Move the player to the car seat position
         player.transform.position = carSeat.position;
@@ -53,6 +60,9 @@ public class RideCar : MonoBehaviour
     void Dismount()
     {
         isRiding = false;
+
+        carControls.enabled = false;
+        PersonController.enabled = true;
 
         // Detach the player from the car
         player.transform.parent = null;
