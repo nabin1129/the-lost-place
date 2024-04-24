@@ -32,9 +32,9 @@ public class FlyingCar : MonoBehaviour
         if (MainCamera != null) MainCamera.enabled = true;
         if (carCamera != null) carCamera.enabled = false;
 
-        PersonController.enabled = true;
+        //PersonController.enabled = true;
         // Ensure car controls are disabled at start
-        if (carControls != null) carControls.enabled = !PersonController.isActiveAndEnabled;
+        //if (carControls != null) carControls.enabled = !PersonController.isActiveAndEnabled;
 
     }
 

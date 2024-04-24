@@ -35,8 +35,8 @@ public class RideCar : MonoBehaviour
     {
         isRiding = true;
 
-        if (carControls != null) carControls.enabled = true;
-        if (PersonController != null) PersonController.enabled = false;
+       // if (carControls != null) carControls.enabled = true;
+       // if (PersonController != null) PersonController.enabled = false;
 
         // Move the player to the car seat position
         player.transform.position = carSeat.position;
@@ -61,8 +61,8 @@ public class RideCar : MonoBehaviour
     {
         isRiding = false;
 
-        carControls.enabled = false;
-        PersonController.enabled = true;
+       // carControls.enabled = false;
+       // PersonController.enabled = true;
 
         // Detach the player from the car
         player.transform.parent = null;
