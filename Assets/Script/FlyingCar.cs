@@ -18,6 +18,8 @@ public class FlyingCar : MonoBehaviour
     // Private fields
     private Rigidbody rb; // Rigidbody component for physics-based movement
     private bool isCarCameraActive = false; // Flag to track which camera is active
+    private bool isPlayerInCar = false; // Flag to track if the player is in the car
+
 
     void Start()
     {
@@ -40,48 +42,53 @@ public class FlyingCar : MonoBehaviour
 
     void Update()
     {
+        
+
         // Check for camera switching key
         if (Input.GetKeyDown(KeyCode.F))
         {
             ToggleCamera();
         }
-
-        // Handle movement input
-        float vertical = Input.GetAxis("Vertical"); // W/S or up/down arrow for forward/backward
-        float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrow for turning
-        bool ascend = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift); // Shift to ascend
-        bool descend = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl); // Ctrl to descend
-        bool brake = Input.GetKey(KeyCode.Space); // Spacebar for braking
-
-        // Control forward/backward movement
-        Vector3 forward = transform.forward * vertical * speed;
-        rb.AddForce(forward, ForceMode.Force);
-
-        // Apply braking force
-        if (brake)
+        if (!isPlayerInCar) return;
+        if (!isPlayerInCar)
         {
-            // Apply a strong negative force to stop the vehicle
-            rb.AddForce(-transform.forward * brakeForce, ForceMode.Force);
+            // Handle movement input
+            float vertical = Input.GetAxis("Vertical"); // W/S or up/down arrow for forward/backward
+            float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrow for turning
+            bool ascend = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift); // Shift to ascend
+            bool descend = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl); // Ctrl to descend
+            bool brake = Input.GetKey(KeyCode.Space); // Spacebar for braking
 
-            // If the vehicle's speed is below the threshold, set its velocity to zero
-            if (rb.velocity.magnitude < stopThreshold)
+            // Control forward/backward movement
+            Vector3 forward = transform.forward * vertical * speed;
+            rb.AddForce(forward, ForceMode.Force);
+
+            // Apply braking force
+            if (brake)
             {
-                rb.velocity = Vector3.zero;
+                // Apply a strong negative force to stop the vehicle
+                rb.AddForce(-transform.forward * brakeForce, ForceMode.Force);
+
+                // If the vehicle's speed is below the threshold, set its velocity to zero
+                if (rb.velocity.magnitude < stopThreshold)
+                {
+                    rb.velocity = Vector3.zero;
+                }
             }
-        }
 
-        // Control turning
-        float turn = horizontal * turnSpeed * Time.deltaTime;
-        transform.Rotate(0, turn, 0);
+            // Control turning
+            float turn = horizontal * turnSpeed * Time.deltaTime;
+            transform.Rotate(0, turn, 0);
 
-        // Control ascending/descending
-        if (ascend)
-        {
-            rb.AddForce(Vector3.up * ascendSpeed, ForceMode.Force);
-        }
-        else if (descend)
-        {
-            rb.AddForce(Vector3.down * descendSpeed, ForceMode.Force);
+            // Control ascending/descending
+            if (ascend)
+            {
+                rb.AddForce(Vector3.up * ascendSpeed, ForceMode.Force);
+            }
+            else if (descend)
+            {
+                rb.AddForce(Vector3.down * descendSpeed, ForceMode.Force);
+            }
         }
     }
 
