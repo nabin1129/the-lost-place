@@ -9,7 +9,7 @@ public class FlyingCar : MonoBehaviour
     public float descendSpeed = 5f; // Speed for descending
     public float brakeForce = 100f; // Force applied for braking
     public float stopThreshold = 0.1f; // Minimum speed to consider the vehicle stopped
-    public Camera mainCamera; // Reference to the main camera
+    public Camera MainCamera; // Reference to the main camera
     public Camera carCamera; // Reference to the car camera
 
     // Private fields
@@ -26,7 +26,7 @@ public class FlyingCar : MonoBehaviour
         }
 
         // Ensure only one camera is active at start
-        if (mainCamera != null) mainCamera.enabled = true;
+        if (MainCamera != null) MainCamera.enabled = true;
         if (carCamera != null) carCamera.enabled = false;
     }
 
@@ -82,7 +82,7 @@ public class FlyingCar : MonoBehaviour
         // Toggle between the main camera and the car camera
         isCarCameraActive = !isCarCameraActive;
 
-        if (mainCamera != null) mainCamera.enabled = !isCarCameraActive;
+        if (MainCamera != null) MainCamera.enabled = !isCarCameraActive;
         if (carCamera != null) carCamera.enabled = isCarCameraActive;
     }
 }
