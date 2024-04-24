@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RideCar : MonoBehaviour
 {
-    public GameObject player; // The player object (Armature)
+    public GameObject player; // The player object (e.g., Armature)
     public GameObject Car; // The car object
     public float interactDistance = 2.0f; // Distance within which interaction is possible
     public KeyCode rideKey = KeyCode.F; // Key to ride the car
@@ -14,8 +13,10 @@ public class RideCar : MonoBehaviour
 
     void Update()
     {
+        // Calculate distance between the player and the car
         float distance = Vector3.Distance(player.transform.position, Car.transform.position);
 
+        // Check if within interaction distance and key is pressed to ride/dismount
         if (distance <= interactDistance && Input.GetKeyDown(rideKey) && !isRiding)
         {
             Ride();
@@ -30,12 +31,22 @@ public class RideCar : MonoBehaviour
     {
         isRiding = true;
 
-        // Disable player movement components (replace with specific component names)
+        // Move the player to the car seat position
+        player.transform.position = carSeat.position;
+
+        // Orient the player to match the car's rotation (ensures correct seating position)
+        player.transform.rotation = carSeat.rotation;
+
+        // Parent the player to the car to ensure they move with it
+        player.transform.parent = Car.transform;
+
+        // Disable player movement components
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<Rigidbody>().isKinematic = true;
 
-        // Set the Car as active and set its control (implement Car control separately)
-        // Example: Car.GetComponent<CarControl>().enabled = true;
+        // Enable car controls (uncomment if you have a car control script)
+        // Car.GetComponent<CarControl>().enabled = true;
+
         Debug.Log("Riding the Car");
     }
 
@@ -43,12 +54,19 @@ public class RideCar : MonoBehaviour
     {
         isRiding = false;
 
+        // Detach the player from the car
+        player.transform.parent = null;
+
         // Enable player movement components
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<Rigidbody>().isKinematic = false;
 
-        // Disable Car control when dismounting
-        // Example: Car.GetComponent<CarControl>().enabled = false;
+        // Position the player slightly in front of the car when dismounting
+        player.transform.position = Car.transform.position + Car.transform.forward * 2f;
+
+        // Disable car controls when dismounting (uncomment if you have a car control script)
+        // Car.GetComponent<CarControl>().enabled = false;
+
         Debug.Log("Dismounting the Car");
     }
 }
