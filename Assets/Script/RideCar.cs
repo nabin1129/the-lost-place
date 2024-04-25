@@ -46,6 +46,8 @@ public class RideCar : MonoBehaviour
         isRiding = true;
         carControls.enabled = true;
         PersonController.enabled = false;
+        MainCamera.enabled = false;
+        carCamera.enabled = true;
 
         // Move the player to the car seat position
         player.transform.position = carSeat.position;
@@ -91,13 +93,30 @@ public class RideCar : MonoBehaviour
     {
         if (activateCarCamera)
         {
-            if (MainCamera != null) MainCamera.enabled = false;
-            if (carCamera != null) carCamera.enabled = true;
+            if (MainCamera != null)
+            {
+                MainCamera.enabled = false;
+                Debug.Log("MainCamera Disabled");
+            }
+            if (carCamera != null)
+            {
+                carCamera.enabled = true;
+                Debug.Log("carCamera Enabled");
+            }
         }
         else
         {
-            if (MainCamera != null) MainCamera.enabled = true;
-            if (carCamera != null) carCamera.enabled = false;
+            if (MainCamera != null)
+            {
+                MainCamera.enabled = true;
+                Debug.Log("MainCamera Enabled");
+            }
+            if (carCamera != null)
+            {
+                carCamera.enabled = false;
+                Debug.Log("carCamera Disabled");
+            }
         }
     }
+
 }
