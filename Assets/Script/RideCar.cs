@@ -11,29 +11,33 @@ public class RideCar : MonoBehaviour
     public KeyCode rideKey = KeyCode.F; // Key to ride the car
     public bool isRiding = false; // Whether the player is riding the car
     public Transform carSeat; // Transform to position player when riding
-    public FlyingCar carControls;
-    public ThirdPersonController PersonController;
+    public FlyingCar carControls; // Car control script
+    public ThirdPersonController PersonController; // Player control script
     public Camera MainCamera; // Reference to the main camera
-    public Camera carCamera;// Reference to the car camera
-    private bool isCarCameraActive = false; // Flag to track which camera is active
-    //private bool isPlayerInCar = false; // Flag to track if the player is in the car
+    public Camera carCamera; // Reference to the car camera
+    private Transform originalCameraParent; // Save the original camera parent
+
+    void Start()
+    {
+        carControls.enabled = false;
+        PersonController.enabled = true;
+        if (MainCamera != null) MainCamera.enabled = true;
+        if (carCamera != null) carCamera.enabled = false;
+    }
 
     void Update()
     {
-        // Calculate distance between the player and the car
+        // Calculate the distance between the player and the car
         float distance = Vector3.Distance(player.transform.position, Car.transform.position);
 
-       
-        // Check if within interaction distance and key is pressed to ride/dismount
+        // Check if within interaction distance and the key is pressed to ride/dismount
         if (distance <= interactDistance && Input.GetKeyDown(rideKey) && !isRiding)
         {
             Ride();
-            ToggleCamera();
         }
         else if (isRiding && Input.GetKeyDown(rideKey))
         {
             Dismount();
-            ToggleCamera();
         }
     }
 
@@ -43,13 +47,8 @@ public class RideCar : MonoBehaviour
         carControls.enabled = true;
         PersonController.enabled = false;
 
-        // if (carControls != null) carControls.enabled = true;
-        // if (PersonController != null) PersonController.enabled = false;
-
         // Move the player to the car seat position
         player.transform.position = carSeat.position;
-
-        // Orient the player to match the car's rotation (ensures correct seating position)
         player.transform.rotation = carSeat.rotation;
 
         // Parent the player to the car to ensure they move with it
@@ -59,8 +58,8 @@ public class RideCar : MonoBehaviour
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<Rigidbody>().isKinematic = true;
 
-        // Enable car controls (uncomment if you have a car control script)
-        // Car.GetComponent<CarControl>().enabled = true;
+        // Activate the car camera and deactivate the main camera
+        ToggleCamera(true);
 
         Debug.Log("Riding the Car");
     }
@@ -71,37 +70,34 @@ public class RideCar : MonoBehaviour
 
         carControls.enabled = false;
         PersonController.enabled = true;
-        // carControls.enabled = false;
-        // PersonController.enabled = true;
 
         // Detach the player from the car
         player.transform.parent = null;
 
-        // Enable player movement components
+        // Re-enable player movement components
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<Rigidbody>().isKinematic = false;
 
         // Position the player slightly in front of the car when dismounting
         player.transform.position = Car.transform.position + Car.transform.forward * 2f;
 
-        // Disable car controls when dismounting (uncomment if you have a car control script)
-        // Car.GetComponent<CarControl>().enabled = false;
+        // Restore the original camera configuration
+        ToggleCamera(false);
 
         Debug.Log("Dismounting the Car");
     }
-    private void Start()
-    {
-        carControls.enabled = false;
-        PersonController.enabled = true;
-        if (MainCamera != null) MainCamera.enabled = true;
-        if (carCamera != null) carCamera.enabled = false;
-    }
-    void ToggleCamera()
-    {
-        // Toggle between the main camera and the car camera
-        
 
-        if (MainCamera != null) MainCamera.enabled = carCamera.isActiveAndEnabled;
-        if (carCamera != null) carCamera.enabled = !MainCamera.isActiveAndEnabled;
+    void ToggleCamera(bool activateCarCamera)
+    {
+        if (activateCarCamera)
+        {
+            if (MainCamera != null) MainCamera.enabled = false;
+            if (carCamera != null) carCamera.enabled = true;
+        }
+        else
+        {
+            if (MainCamera != null) MainCamera.enabled = true;
+            if (carCamera != null) carCamera.enabled = false;
+        }
     }
 }
