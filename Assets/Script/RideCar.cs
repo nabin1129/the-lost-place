@@ -69,6 +69,8 @@ public class RideCar : MonoBehaviour
     void Dismount()
     {
         isRiding = false;
+        MainCamera.enabled = true;
+        carCamera.enabled = false;
 
         carControls.enabled = false;
         PersonController.enabled = true;
