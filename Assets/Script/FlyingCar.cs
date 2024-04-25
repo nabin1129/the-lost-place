@@ -10,19 +10,17 @@ public class FlyingCar : MonoBehaviour
     public float descendSpeed = 5f; // Speed for descending
     public float brakeForce = 100f; // Force applied for braking
     public float stopThreshold = 0.1f; // Minimum speed to consider the vehicle stopped
-    public Camera MainCamera; // Reference to the main camera
-    public Camera carCamera; // Reference to the car camera
-    public FlyingCar carControls;
-    public ThirdPersonController PersonController;
+    
+    
 
     // Private fields
     private Rigidbody rb; // Rigidbody component for physics-based movement
-    private bool isCarCameraActive = false; // Flag to track which camera is active
-    private bool isPlayerInCar = false; // Flag to track if the player is in the car
+   
 
 
     void Start()
     {
+       
         // Initialize the Rigidbody component
         rb = GetComponent<Rigidbody>();
         if (rb == null)
@@ -31,8 +29,7 @@ public class FlyingCar : MonoBehaviour
         }
 
         // Ensure only one camera is active at start
-        if (MainCamera != null) MainCamera.enabled = true;
-        if (carCamera != null) carCamera.enabled = false;
+        
 
         //PersonController.enabled = true;
         // Ensure car controls are disabled at start
@@ -45,13 +42,7 @@ public class FlyingCar : MonoBehaviour
         
 
         // Check for camera switching key
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            ToggleCamera();
-        }
-        if (!isPlayerInCar) return;
-        if (!isPlayerInCar)
-        {
+        
             // Handle movement input
             float vertical = Input.GetAxis("Vertical"); // W/S or up/down arrow for forward/backward
             float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrow for turning
@@ -89,15 +80,8 @@ public class FlyingCar : MonoBehaviour
             {
                 rb.AddForce(Vector3.down * descendSpeed, ForceMode.Force);
             }
-        }
+        
     }
 
-    void ToggleCamera()
-    {
-        // Toggle between the main camera and the car camera
-        isCarCameraActive = !isCarCameraActive;
-
-        if (MainCamera != null) MainCamera.enabled = !isCarCameraActive;
-        if (carCamera != null) carCamera.enabled = isCarCameraActive;
-    }
+    
 }

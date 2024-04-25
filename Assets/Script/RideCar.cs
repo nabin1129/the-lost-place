@@ -13,30 +13,38 @@ public class RideCar : MonoBehaviour
     public Transform carSeat; // Transform to position player when riding
     public FlyingCar carControls;
     public ThirdPersonController PersonController;
-
+    public Camera MainCamera; // Reference to the main camera
+    public Camera carCamera;// Reference to the car camera
+    private bool isCarCameraActive = false; // Flag to track which camera is active
+    //private bool isPlayerInCar = false; // Flag to track if the player is in the car
 
     void Update()
     {
         // Calculate distance between the player and the car
         float distance = Vector3.Distance(player.transform.position, Car.transform.position);
 
+       
         // Check if within interaction distance and key is pressed to ride/dismount
         if (distance <= interactDistance && Input.GetKeyDown(rideKey) && !isRiding)
         {
             Ride();
+            ToggleCamera();
         }
         else if (isRiding && Input.GetKeyDown(rideKey))
         {
             Dismount();
+            ToggleCamera();
         }
     }
 
     void Ride()
     {
         isRiding = true;
+        carControls.enabled = true;
+        PersonController.enabled = false;
 
-       // if (carControls != null) carControls.enabled = true;
-       // if (PersonController != null) PersonController.enabled = false;
+        // if (carControls != null) carControls.enabled = true;
+        // if (PersonController != null) PersonController.enabled = false;
 
         // Move the player to the car seat position
         player.transform.position = carSeat.position;
@@ -61,8 +69,10 @@ public class RideCar : MonoBehaviour
     {
         isRiding = false;
 
-       // carControls.enabled = false;
-       // PersonController.enabled = true;
+        carControls.enabled = false;
+        PersonController.enabled = true;
+        // carControls.enabled = false;
+        // PersonController.enabled = true;
 
         // Detach the player from the car
         player.transform.parent = null;
@@ -78,5 +88,20 @@ public class RideCar : MonoBehaviour
         // Car.GetComponent<CarControl>().enabled = false;
 
         Debug.Log("Dismounting the Car");
+    }
+    private void Start()
+    {
+        carControls.enabled = false;
+        PersonController.enabled = true;
+        if (MainCamera != null) MainCamera.enabled = true;
+        if (carCamera != null) carCamera.enabled = false;
+    }
+    void ToggleCamera()
+    {
+        // Toggle between the main camera and the car camera
+        
+
+        if (MainCamera != null) MainCamera.enabled = carCamera.isActiveAndEnabled;
+        if (carCamera != null) carCamera.enabled = !MainCamera.isActiveAndEnabled;
     }
 }
