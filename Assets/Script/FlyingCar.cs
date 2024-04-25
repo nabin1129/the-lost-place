@@ -54,19 +54,6 @@ public class FlyingCar : MonoBehaviour
             Vector3 forward = transform.forward * vertical * speed;
             rb.AddForce(forward, ForceMode.Force);
 
-            // Apply braking force
-            if (brake)
-            {
-                // Apply a strong negative force to stop the vehicle
-                rb.AddForce(-transform.forward * brakeForce, ForceMode.Force);
-
-                // If the vehicle's speed is below the threshold, set its velocity to zero
-                if (rb.velocity.magnitude < stopThreshold)
-                {
-                    rb.velocity = Vector3.zero;
-                }
-            }
-
             // Control turning
             float turn = horizontal * turnSpeed * Time.deltaTime;
             transform.Rotate(0, turn, 0);
@@ -80,8 +67,25 @@ public class FlyingCar : MonoBehaviour
             {
                 rb.AddForce(Vector3.down * descendSpeed, ForceMode.Force);
             }
-        
+        if (brake)
+        {
+            ApplyBraking();
+        }
     }
 
-    
+    void ApplyBraking()
+    {
+        // Apply a braking force in the opposite direction of travel
+        rb.AddForce(-transform.forward * brakeForce, ForceMode.Force);
+
+        // If the vehicle's speed is below the threshold, set its velocity to zero
+        if (rb.velocity.magnitude < stopThreshold)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero; // Optional, to stop spinning
+        }
+    }
 }
+
+    
+
