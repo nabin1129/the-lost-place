@@ -3,7 +3,6 @@ using UnityEngine;
 public class eventTrigger : MonoBehaviour
 {
     public GameObject find;
-    public GameObject find2;
     public Collider collision;
 
 
